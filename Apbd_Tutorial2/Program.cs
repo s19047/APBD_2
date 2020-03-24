@@ -46,7 +46,7 @@ namespace Apbd_Tutorial2
                         {
                             if (string.IsNullOrWhiteSpace(columns[i]))
                             {
-                                sw.WriteLine($"Element with student number s{columns[4]} has column number {i} empty");
+                                sw.WriteLine($"Element with studfent number s{columns[4]} has column number {i} empty");
                                 noErrors = false;
                             }
                         }
