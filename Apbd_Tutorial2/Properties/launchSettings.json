@@ -2,7 +2,7 @@
   "profiles": {
     "Apbd_Tutorial2": {
       "commandName": "Project",
-      "commandLineArgs": "\"Data\\data.csv\" \"C:\\Users\\progy\\Desktop\\4th_sem_pjatk\\APBD\\Apbd_Tutorial2_solution\\Apbd_Tutorial2\\Result\" \"xml\""
+      "commandLineArgs": "\"Data\\data.csv\" \"C:\\Users\\progy\\Desktop\\4th_sem_pjatk\\APBD\\Apbd_tut_solution\\tutorial2\\Apbd_Tutorial2\\Result\\\\\" \"json\""
     }
   }
 }

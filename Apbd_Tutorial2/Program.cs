@@ -2,31 +2,45 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 using System.Xml.Serialization;
+
 
 namespace Apbd_Tutorial2
 {
     public class Program
     {
+
        public  static void Main(string[] args)
         {
-            var path = @args[0];
-            Console.WriteLine(path);
+            //path for my dataset
+            string dataPath = @args[0];
+
+            //path for the resulting xml/json files
+            string destinationPath = args[1];
+            
+            //mode of serialization
+            string mode = args[2];
+
+            //author
+            string author = "Ahmad Alaziz";
+           
+
             //streamwriter to log errors
             using var sw = new StreamWriter(@"log.txt");
-            // Files to be deleted    
-            string resultFile = "result.xml";
-            string destinationPath = args[1];
+
+             
+            string resultFileName = "result";
+            
             Boolean noErrors = true;
-            var fi = new FileInfo(path);
+            var fi = new FileInfo(dataPath);
 
-            //read file
-
-            //using releases resources afte rthey have been used thus dispose
             using (var stream = new StreamReader(fi.OpenRead()))
             {
-                var listOfStudents = new HashSet<Student>(new customComparer());
-                var listOfStudies = new HashSet<Study>(new customComparer());
+              
+                students Students = new students();
+                var activeStudies = new List<activeStudy>();
+              
 
                 string line = null;
                 while ((line = stream.ReadLine()) != null)
@@ -51,7 +65,40 @@ namespace Apbd_Tutorial2
                             }
                         }
                     }
-                    if (noErrors) { 
+                    if (noErrors) {
+                        var study = new Study
+                        {
+                            name = columns[2],
+                            mode = columns[3],
+
+                        };
+                        activeStudy AS = new activeStudy
+                        {
+                            name = columns[2],
+                            
+                        };
+
+                        // go through the list of active studies , if any duplicates are found , increase number of students
+                        //else just add a new one , I realize this is unfortunatly a costly solution 
+
+                        Boolean duplicateFound = false;
+                       for(int i = 0;i<activeStudies.Count && !duplicateFound; i++)
+                        {
+
+                            if(activeStudies[i].name == AS.name)
+                            {
+                                duplicateFound = true;
+                                ++activeStudies[i].numOfStudents;
+                            }
+                            
+                        }
+                        if (!duplicateFound)
+                        {
+                            AS.numOfStudents = 1;
+                            activeStudies.Add(AS);
+                        }
+                       
+
                         var student = new Student
                         {
                             indexNumber = "s" + columns[4],
@@ -60,37 +107,53 @@ namespace Apbd_Tutorial2
                             BirthDate = DateTime.Parse(columns[5]),
                             Email = columns[6],
                             Mother = columns[7],
-                            Father = columns[8]
+                            Father = columns[8],
+                            study = study
                         };
 
-                        var study = new Study
-                        {
-                            name = columns[2],
-                            mode = columns[3],
-
-                        };
-
-                        study.numberOfStudents++;
-                        listOfStudies.Add(study);
+                 
                         //if any student was repeated print error
-                        if (!listOfStudents.Add(student))
+                        if (!Students.listOfStudents.Add(student))
                         {
                             //log error
                             sw.WriteLine($"student with student number s{columns[4]} was not added successfully to the list");
                         }
                     }
 
-                
-                    
                 }
+                University uni = new University
+                {
+                    author = author,
+                    time = DateTime.Now,
+                    students = Students,
+                    ActiveStudies = activeStudies
+
+                };
+
+                Console.WriteLine("number of students :"+Students.listOfStudents.Count);
+
+                Serialize(destinationPath,uni,mode,resultFileName);
                 
-                Console.WriteLine("number of students :"+listOfStudents.Count);
-                var writer = new FileStream(Path.Combine(args[1], resultFile), FileMode.Create);
-                var serializer = new XmlSerializer(typeof(HashSet<Student>),new XmlRootAttribute("University"));
-                serializer.Serialize(writer, listOfStudents);
 
             }
 
+        }
+
+        private static void Serialize(String destPath,University uni, String mode, String resultFile)
+        {
+            var writer = new FileStream(Path.Combine(destPath, (resultFile + ".xml")), FileMode.Create);
+            if (string.Equals(mode, "xml", StringComparison.OrdinalIgnoreCase))
+            {
+                
+                var serializer = new XmlSerializer(typeof(University), new XmlRootAttribute("University"));
+                serializer.Serialize(writer, uni);
+            }
+            else if (string.Equals(mode, "json", StringComparison.OrdinalIgnoreCase))
+            {
+               
+                String resultJson = JsonSerializer.Serialize(uni);
+                File.WriteAllText(Path.Combine(destPath, (resultFile + ".json")), resultJson);
+            }
         }
     }
 }

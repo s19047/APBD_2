@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Apbd_Tutorial2
 {
-    class customComparer : IEqualityComparer<Student>, IEqualityComparer<Study>
+    class customComparer : IEqualityComparer<Student>, IEqualityComparer<Study>, IEqualityComparer<activeStudy>
     {
         public bool Equals( Student x,  Student y)
         {
@@ -19,6 +19,11 @@ namespace Apbd_Tutorial2
             return StringComparer.InvariantCultureIgnoreCase.Equals($"{x.name}{x.mode}", $"{y.name}{y.mode}");
         }
 
+        public bool Equals( activeStudy x,  activeStudy y)
+        {
+            return StringComparer.InvariantCultureIgnoreCase.Equals($"{x.name}{x.numOfStudents}", $"{y.name}{y.numOfStudents}");
+        }
+
         public int GetHashCode(Student obj)
         {
             return StringComparer.InvariantCultureIgnoreCase.GetHashCode($"{obj.indexNumber}{obj.fName}{obj.lName}{obj.BirthDate}" +
@@ -28,6 +33,11 @@ namespace Apbd_Tutorial2
         public int GetHashCode(Study obj)
         {
             return StringComparer.InvariantCultureIgnoreCase.GetHashCode($"{obj.name}{obj.mode}");
+        }
+
+        public int GetHashCode([DisallowNull] activeStudy obj)
+        {
+            return StringComparer.InvariantCultureIgnoreCase.GetHashCode($"{obj.name}{obj.numOfStudents}");
         }
     }
 }

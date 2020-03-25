@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Xml.Linq;
+using System.Xml.Serialization;
 namespace Apbd_Tutorial2.Models
 {
-    class Study
+    public class Study
     {
         public string name { get; set; }
         public string mode { get; set; }
 
-        public int numberOfStudents { get; set; } = 0;
+        
     }
 }

@@ -11,6 +11,7 @@ namespace Apbd_Tutorial2.Models
     {
 
         
+        
         [XmlAttribute]
         public string indexNumber { get; set; }
         public string fName { get; set; }
@@ -26,15 +27,10 @@ namespace Apbd_Tutorial2.Models
         [XmlElement(elementName: "fathersName'")]
         public string  Father { get; set; }
 
-        XElement xmlTree = new XElement("Root",
-         new XElement("Child1", 1),
-          new XElement("Child2", 2),
-         new XElement("Child3", 3),
-        new XElement("Child4", 4),
-         new XElement("Child5", 5)
-    );
+        [XmlElement(elementName: "studies'")]
+        public Study study { get; set; }
 
-
+       
 
     }
 }
